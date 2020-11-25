@@ -3,6 +3,13 @@ const RIGHT = 39
 const UP = 38
 const DOWN = 40
 
+const snakespeed = 50
+const height = 20
+const width = 20
+
+let interval
+let running = true
+
 const canvas = document.getElementById('screen')
 const context = canvas.getContext('2d')
 
@@ -16,10 +23,7 @@ class Screen {
 class Snake {
     constructor(){
         this.points = 0
-        this.body = [{x:4,y:1},
-                    {x:3,y:1},
-                    {x:2,y:1},
-                    {x:1,y:1}]
+        this.body = [{x:Math.floor(width / 2),y:Math.floor(height / 2)}]
     }
 
     RenderSnake(){
@@ -106,22 +110,25 @@ class Fruit {
 
 function keyboard(event) {
 
-    var key = event.keyCode 
+    let key = event.keyCode     
     
-    while(key == UP){
-        setInterval(function onTick() {snake.up();Render()},1000)
-    }
-
-    /*
+    clearInterval(interval)
     if (key == UP){
-        snake.up()
+        interval = setInterval(() => {snake.up()},snakespeed)
+
     } else if (key == DOWN) {
-        snake.down()
+       
+        interval = setInterval(() => {snake.down()},snakespeed)
+
     } else if(key == RIGHT){
-        snake.right()
+       
+        interval = setInterval(() => {snake.right()},snakespeed)
+
     } else if (key==LEFT) {
-        snake.left()
-    }*/
+       
+        interval = setInterval(() => {snake.left()},snakespeed)
+
+    }
 }
 
 function Render() {
@@ -139,15 +146,32 @@ function Render() {
         fruit.generateFruit()
         snake.AddPoint()
     }
+
+    for (let i in snake.body){
+        let part = snake.body[i]
+        if (snake.body[0].x === part.x && snake.body[0].y === part.y && snake.body.length > 2){
+            //console.log(snake.body.length)
+            //let ok = prompt('Você Perdeu!')
+            //document.location.reload
+        }
+
+    }
+
     requestAnimationFrame(Render)
 
 }
 
 const snake = new Snake()
-const screen = new Screen(20,20)
+const screen = new Screen(width,height)
 const fruit = new Fruit()
 
 canvas.setAttribute('width',screen.width)
 canvas.setAttribute('height',screen.height)
+
+
+
+if (!running){
+    
+}
 
 Render()
