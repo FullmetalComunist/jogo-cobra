@@ -16,8 +16,83 @@ let running = true
 
 const canvas = document.getElementById('screen')
 const context = canvas.getContext('2d')
+
+let playerboard = document.querySelector('ui.playerboard')
+let playerboardscore = document.createElement('li')
+
+let playername = undefined
 let placar = document.querySelector('p#placar')
 
+class Player{
+    constructor(){
+        this.getName = () =>{
+            if(sessionStorage.getItem('name') == null){
+                let name = prompt('Qual o seu nome Jogador?').toLowerCase()
+                sessionStorage.setItem('name', name)
+                return name
+
+            } return sessionStorage.getItem('name')
+        }
+        this.name = this.getName()
+        this.points = 0
+    }
+}
+
+class ScoreBoard{
+    constructor(){
+        this.pullScore = (scorefile) => {
+            this.scores = JSON.parse(scorefile);
+        }
+
+        this.get_scores = (callback = this.pullScore) => {
+            let file = "./javascript/score.json";
+          
+            fetch(file, {cache: 'no-cache'})
+              .then(function(response) {
+                  if (response.status !== 200) {
+                    alert('Erro buscando pontuções ;-;')
+                  }
+                  response.json().then(function(data) {
+                    let scores = JSON.stringify(data);
+                    callback (scores);
+                    return scores;
+                  });
+                })
+              .catch(function(err) {
+                alert('Erro buscando pontuções ;-;')
+              });
+          }
+
+        this.scores = this.get_scores()
+        this.scoreboardHTML = document.querySelector('ul.scoreboard')
+        this.li = document.createElement('li')        
+    }
+
+    updateScore(){
+        JSON.stringify(this.scores)
+    }
+
+    sortScore(){
+        for (let i = this.scores.length -1; i >= 0; i--){
+            let obj = this.scores[i]
+            if (obj["index"] > this.scores[0]["index"]){
+                this.scores.unshift(obj)
+                this.scores.pop(i)
+            }
+        }
+    }
+
+    pushScore(){
+        let newscore = {index: player.points / snakedelay, 
+                        player: player.name,
+                        score: player.points,
+                        speed: snakedelay}
+        
+        this.scores.push(newscore)
+        this.sortScore()
+    }
+    
+}
 
 class Screen {
     constructor(height=10,width=10){
@@ -28,7 +103,7 @@ class Screen {
 
 class Snake {
     constructor(){
-        this.points = 0
+
         this.body = [{x:Math.floor(width / 2),y:Math.floor(height / 2)}]
     }
 
@@ -51,9 +126,8 @@ class Snake {
         var SnakePart = {x:LastSnakePart.x,y:LastSnakePart.y}
 
         this.body.push(SnakePart)
-        this.points++
-        console.log(this.points)
-        placar.innerHTML = this.points
+        player.points++
+        placar.innerHTML = player.points
     }
 
     Movement(axysx,axysy){
@@ -167,8 +241,11 @@ function Render() {
 
 }
 
-const snake = new Snake()
+const scoreboard = new ScoreBoard()
 const screen = new Screen(width,height)
+
+const player = new Player()
+const snake = new Snake()
 const fruit = new Fruit()
 
 canvas.setAttribute('width',screen.width)
