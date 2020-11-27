@@ -155,7 +155,7 @@ function Render() {
     
     snake.RenderSnake()
 
-    context.fillStyle = 'yellow'
+    context.fillStyle = 'red'
     context.fillRect(fruit.x,fruit.y,1,1)
 
     if (snake.body[0].x == fruit.x && snake.body[0].y == fruit.y){
