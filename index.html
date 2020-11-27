@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jogo da cobrinha</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body onkeydown="keyboard(event)">
-    <canvas id="screen"></canvas>
+    <section class="game">
+        <canvas id="screen">
 
+        </canvas>
+        <section class="opcoes">
+            <h1 class="opcoes">Placar:
+                <p id="placar" class="opcoes">0</p>
+            </h1>
+            <h1 class="opcoes">Velocidade:
+                <input type="number" name="opcoes" id="delay" value="40" minlength="1" oninput="alterdelay()">
+            </h1>
+        </section>
+    </section>
     <script src="./javascript/javascript.js"></script>
 </body>
 </html>

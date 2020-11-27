@@ -1,8 +1,40 @@
+*{
+    font-family: 'Inter', sans-serif;
+}
+
 #screen {
+    display: flex;
+    flex-direction: column;
     width: 400px;
     height: 400px;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     border: 10px solid rgb(100, 100, 100);
     
+}
+
+.game{
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+
+.opcoes{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    border-radius: 50px;
+    padding: 10px;
+}
+
+h1.opcoes{
+    border: 1px solid black;    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.opcoes input{
+    border: none;
 }
