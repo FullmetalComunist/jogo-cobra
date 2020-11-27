@@ -44,7 +44,7 @@ class ScoreBoard{
             this.scores = JSON.parse(scorefile);
         }
 
-        this.get_scores = (callback = this.pullScore) => {
+        /*this.get_scores = (callback = this.pullScore) => {
             let file = "./javascript/score.json";
           
             fetch(file, {cache: 'no-cache'})
@@ -61,15 +61,28 @@ class ScoreBoard{
               .catch(function(err) {
                 alert('Erro buscando pontuções ;-;')
               });
-          }
-
-        this.scores = this.get_scores()
+          }*/
+        
+        this.fetch_scores = () =>{
+            const fetch_data = JSON.parse(localStorage.getItem('scores'))
+            if (fetch_data != null){
+                return fetch_data
+            } return []
+        }
+        this.scores = this.fetch_scores()
         this.scoreboardHTML = document.querySelector('ul.scoreboard')
         this.li = document.createElement('li')        
     }
 
+    showScore(){
+        for (let i in this.scores){
+            let score = this.scores[i]
+            this.scoreboardHTML.innerHTML +=`<li>${i} - ${score.player} - Pontos: ${score.pontos} |  Velocidade : ${score.speed}</li>`
+        }
+    }
+
     updateScore(){
-        JSON.stringify(this.scores)
+        localStorage.setItem('scores',JSON.stringify(this.scores)) 
     }
 
     sortScore(){
@@ -79,13 +92,13 @@ class ScoreBoard{
                 this.scores.unshift(obj)
                 this.scores.pop(i)
             }
-        }
+        } this.updateScore()
     }
 
     pushScore(){
         let newscore = {index: player.points / snakedelay, 
                         player: player.name,
-                        score: player.points,
+                        pontos: player.points,
                         speed: snakedelay}
         
         this.scores.push(newscore)
@@ -127,14 +140,15 @@ class Snake {
 
         this.body.push(SnakePart)
         player.points++
-        placar.innerHTML = player.points
+        placar.innerHTML = player.points        
     }
 
     Movement(axysx,axysy){
         for (let peer of this.body){
             if (peer.x === axysx && peer.y === axysy){
-                alert(`Você Perdeu! Mas fez ${this.points} pontos ☺`)
+                alert(`Você Perdeu! Mas fez ${player.points} pontos ☺`)
                 clearInterval(interval)
+                scoreboard.pushScore()
                 document.location.reload(true)
                 break;
             }
@@ -248,6 +262,7 @@ const player = new Player()
 const snake = new Snake()
 const fruit = new Fruit()
 
+scoreboard.showScore()
 canvas.setAttribute('width',screen.width)
 canvas.setAttribute('height',screen.height)
 
