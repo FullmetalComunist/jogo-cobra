@@ -12,7 +12,7 @@ let alterdelay = () =>{
 }
 
 let interval
-let running = true
+let lastKey
 
 const canvas = document.getElementById('screen')
 const context = canvas.getContext('2d')
@@ -27,7 +27,7 @@ class Player{
     constructor(){
         this.getName = () =>{
             if(sessionStorage.getItem('name') == null){
-                let name = prompt('Qual o seu nome Jogador?').toLowerCase()
+                let name = prompt('Qual o seu nome Jogador?')
                 sessionStorage.setItem('name', name)
                 return name
 
@@ -44,25 +44,6 @@ class ScoreBoard{
             this.scores = JSON.parse(scorefile);
         }
 
-        /*this.get_scores = (callback = this.pullScore) => {
-            let file = "./javascript/score.json";
-          
-            fetch(file, {cache: 'no-cache'})
-              .then(function(response) {
-                  if (response.status !== 200) {
-                    alert('Erro buscando pontuções ;-;')
-                  }
-                  response.json().then(function(data) {
-                    let scores = JSON.stringify(data);
-                    callback (scores);
-                    return scores;
-                  });
-                })
-              .catch(function(err) {
-                alert('Erro buscando pontuções ;-;')
-              });
-          }*/
-        
         this.fetch_scores = () =>{
             const fetch_data = JSON.parse(localStorage.getItem('scores'))
             if (fetch_data != null){
@@ -75,9 +56,9 @@ class ScoreBoard{
     }
 
     showScore(){
-        for (let i in this.scores){
+        for (let i = this.scores.length - 1; i>=0; i--){
             let score = this.scores[i]
-            this.scoreboardHTML.innerHTML +=`<li>${i} - ${score.player} - Pontos: ${score.pontos} |  Velocidade : ${score.speed}</li>`
+            this.scoreboardHTML.innerHTML +=`<li>${this.scores.length - i} - ${score.player} - Pontos: ${score.pontos} |  Velocidade : ${score.speed}</li>`
         }
     }
 
@@ -86,13 +67,8 @@ class ScoreBoard{
     }
 
     sortScore(){
-        for (let i = this.scores.length -1; i >= 0; i--){
-            let obj = this.scores[i]
-            if (obj["index"] > this.scores[0]["index"]){
-                this.scores.unshift(obj)
-                this.scores.pop(i)
-            }
-        } this.updateScore()
+        this.scores.sort((a,b) => (a.index > b.index) ? 1 : -1)
+        this.updateScore()
     }
 
     pushScore(){
@@ -214,25 +190,30 @@ class Fruit {
 
 function keyboard(event) {
 
-    let key = event.keyCode     
+    let key = event.key   
     
-    clearInterval(interval)
-    if (key == UP){
-        interval = setInterval(() => {snake.up()},snakedelay)
+    if (key != lastKey){
 
-    } else if (key == DOWN) {
-       
-        interval = setInterval(() => {snake.down()},snakedelay)
+        if (key == 'ArrowUp' && lastKey != 'ArrowDown'){
+            clearInterval(interval)
+            interval = setInterval(() => {snake.up()},snakedelay)
 
-    } else if(key == RIGHT){
-       
-        interval = setInterval(() => {snake.right()},snakedelay)
+        } else if (key == 'ArrowDown' && lastKey != 'ArrowUp') {
+            clearInterval(interval)
+            interval = setInterval(() => {snake.down()},snakedelay)
 
-    } else if (key==LEFT) {
-       
-        interval = setInterval(() => {snake.left()},snakedelay)
+        } else if(key == 'ArrowRight' && lastKey != 'ArrowLeft'){
+            clearInterval(interval)
+            interval = setInterval(() => {snake.right()},snakedelay)
+            
+        } else if (key=='ArrowLeft' && lastKey != 'ArrowRight') {
+            clearInterval(interval)
+            interval = setInterval(() => {snake.left()},snakedelay)
 
+        }
     }
+    lastKey = key
+    console.log(lastKey)
 }
 
 function Render() {
